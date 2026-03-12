@@ -9,7 +9,6 @@ const db = require('./db');
 
 const app = express();
 
-// Middleware
 
 app.use(cors({
     origin: [
