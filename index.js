@@ -9,9 +9,12 @@ const db = require('./db');
 
 const app = express();
 
-// Middleware
+
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: [
+        "http://localhost:5173",
+        "https://fullstack-psi-mauve.vercel.app"
+    ],
     credentials: true
 }));
 app.use(express.json());
