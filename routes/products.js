@@ -39,8 +39,13 @@ router.get('/', async (req, res) => {
     const params = [];
 
     if (category) {
-        query += ' AND p.category_id = ?';
-        params.push(category);
+        if (!isNaN(category)) {
+            query += ' AND p.category_id = ?';
+            params.push(category);
+        } else {
+            query += ' AND c.name = ?';
+            params.push(category);
+        }
     }
     if (search) {
         query += ' AND p.name LIKE ?';
@@ -84,7 +89,7 @@ router.post('/', upload.single('image'), async (req, res) => {
     try {
         await db.execute(
             'INSERT INTO products (name, description, price, category_id, weight_qty, flavor_options, stock_availability, image_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-            [name || null, description || null, price || null, category_id || null, weight_qty || null, flavor_options || null, stock_availability || null, imageUrl]
+            [name, description, price, category_id, weight_qty, flavor_options, stock_availability, imageUrl]
         );
         res.status(201).json({ message: 'Product added successfully' });
     } catch (error) {
@@ -98,7 +103,7 @@ router.put('/:id', upload.single('image'), async (req, res) => {
 
     const { name, description, price, category_id, weight_qty, flavor_options, stock_availability } = req.body;
     let query = 'UPDATE products SET name=?, description=?, price=?, category_id=?, weight_qty=?, flavor_options=?, stock_availability=?';
-    const params = [name || null, description || null, price || null, category_id || null, weight_qty || null, flavor_options || null, stock_availability || null];
+    const params = [name, description, price, category_id, weight_qty, flavor_options, stock_availability];
 
     if (req.file) {
         query += ', image_url=?';
